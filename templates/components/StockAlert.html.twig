@@ -1,0 +1,28 @@
+<div {{ attributes }}>
+	<button class="self-start Button Button--large open-modal" type="button" data-action="live#emit" data-live-event-param="stockAlert" data-live-pse-param="{{currentPse.id}}" data-id="stockAlert">
+		{{'Alert me'|trans}}
+		<span class="icon icon-right">
+			{{ ux_icon('bell') }}
+		</span>
+	</button>
+
+	{% set stockAlertContent %}
+	{{form_start(form,{
+		attr : {
+			class: 'flex flex-col items-stretch gap-4 mt-4',
+			'data-action': 'live#action:prevent',
+			'data-live-action-param': 'save'
+			}
+		})}}
+	<legend class="h4">{{'Register your email to be notified when it will be available again.'|trans}}</legend>
+	{# <input type="hidden" name="{{ field_name(form.product_sale_elements_id) }}" value="{{ pseId }}"> #}
+	{{form_rest(form)}}
+	{% include "@components/Molecules/Button/Button.html.twig" with {type:"submit", text: "Confirm"|trans, variant: "large", classes: "self-center" } %}
+	{{form_end(form)}}
+	{% endset %}
+
+	{% include '@components/Molecules/Modal/Modal.html.twig' with {
+		name: 'stockAlert',
+		content: stockAlertContent
+	} %}
+</div>
