@@ -15,11 +15,14 @@ namespace StockAlert\Controller;
 use StockAlert\Event\StockAlertEvent;
 use StockAlert\Event\StockAlertEvents;
 use StockAlert\Form\StockAlertSubscribe;
+use StockAlert\Service\StockAlertService;
 use StockAlert\StockAlert;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Thelia\Controller\Front\BaseFrontController;
+use Thelia\Core\HttpFoundation\Response;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\Exception\FormValidationException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -34,50 +37,34 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class StockAlertFrontOfficeController extends BaseFrontController
 {
-
     /**
      * @Route("/subscribe", name="_subscribe", methods="POST")
+     * @throws \JsonException
      */
-    public function subscribe(EventDispatcherInterface $eventDispatcher, RequestStack $requestStack)
+    public function subscribe(Request $request, StockAlertService $stockAlertService): Response|RedirectResponse
     {
         $success = true;
 
-        $form = $this->createForm(StockAlertSubscribe::getName(), FormType::class, [], ['csrf_protection'   => false]);
+        $form = $this->createForm(StockAlertSubscribe::getName(), FormType::class, [], ['csrf_protection' => false]);
 
         try {
             $subscribeForm = $this->validateForm($form)->getData();
-
-            $subscriberEvent = new StockAlertEvent(
-                $subscribeForm['product_sale_elements_id'],
-                $subscribeForm['email'],
-                $subscribeForm['newsletter'],
-                $requestStack->getCurrentRequest()->getSession()->getLang()->getLocale()
-            );
-
-            $eventDispatcher->dispatch($subscriberEvent, StockAlertEvents::STOCK_ALERT_SUBSCRIBE);
-
-            $message = Translator::getInstance()->trans(
-                "C’est noté ! Vous recevrez un e-mail dès que le produit sera de nouveau en stock.",
-                [],
-                StockAlert::MESSAGE_DOMAIN
-            );
+            $message = $stockAlertService->subscribe($subscribeForm);
         } catch (\Exception $e) {
             $success = false;
             $message = $e->getMessage();
         }
 
-        if (!$requestStack->getCurrentRequest()->isXmlHttpRequest()) {
-            $requestStack->getCurrentRequest()->getSession()->getFlashBag()->set('flashMessage', $message);
-            return RedirectResponse::create($requestStack->getCurrentRequest()->get('stockalert_subscribe_form')['success_url']);
+        if (!$request->isXmlHttpRequest()) {
+            $request->getSession()->getFlashBag()->set('flashMessage', $message);
+            return new RedirectResponse($request->get('stockalert_subscribe_form')['success_url']);
         }
 
         return $this->jsonResponse(
-            json_encode(
-                [
-                    "success" => $success,
-                    "message" => $message
-                ]
-            )
+            json_encode([
+                "success" => $success,
+                "message" => $message
+            ], JSON_THROW_ON_ERROR)
         );
     }
 }
