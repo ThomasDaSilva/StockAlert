@@ -136,7 +136,7 @@ class StockAlert extends BaseModule
         return $this->translator->trans($id, $parameters, StockAlert::MESSAGE_DOMAIN, $locale);
     }
 
-    public function getHooks()
+    public function getHooks(): array
     {
         return [
             [
