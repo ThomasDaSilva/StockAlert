@@ -18,6 +18,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
+use Symfony\UX\LiveComponent\ComponentToolsTrait;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 use TwigEngine\Service\FormService;
@@ -27,6 +28,7 @@ class StockAlert extends AbstractController
 {
     use ComponentWithFormTrait;
     use DefaultActionTrait;
+    use ComponentToolsTrait;
 
     #[LiveProp]
     public ?int $pseId = null;
@@ -34,16 +36,25 @@ class StockAlert extends AbstractController
     public ?string $message = null;
 
 
-    public function __construct(private readonly FormService $formService, private StockAlertService $stockAlertService
-    )
-    {
+    public function __construct(
+        private readonly FormService $formService,
+        private StockAlertService $stockAlertService
+    ) {
     }
 
     protected function instantiateForm(): FormInterface
     {
-        $form = $this->formService->getFormByName('stockalert_subscribe_form');
+        $form = $this->formService->getFormByName('stockalert_subscribe_form', [
+            'product_sale_elements_id' => $this->pseId
+        ]);
 
         return $form;
+    }
+
+    #[LiveAction]
+    public function openModal()
+    {
+        $this->dispatchBrowserEvent('modal:open');
     }
 
     #[LiveAction]
@@ -61,7 +72,7 @@ class StockAlert extends AbstractController
             }
         } catch (\Throwable $th) {
             $this->success = false;
-            $this->message = 'Erreur lors de la soumission';
+            $this->message = $th;
         }
     }
 }
