@@ -23,11 +23,10 @@ use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Template\ParserContext;
 use Thelia\Form\Exception\FormValidationException;
 use Thelia\Model\ConfigQuery;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Tools\URL;
 
 /**
- * @Route("/admin/module/stockalert", name="stockalert_back")
  * Class StockAlertBackOfficeController
  * @package StockAlert\Controller
  * @author Baixas Alban <abaixas@openstudio.fr>
@@ -39,6 +38,7 @@ class StockAlertBackOfficeController extends BaseAdminController
     /**
      * @Route("/configuration", name="_configuration", methods="POST")
      */
+    #[Route('/admin/module/stockalert', name: 'stockalert_back')]
     public function configuration(ParserContext $parserContext)
     {
         $errorMessage = null;
@@ -76,8 +76,8 @@ class StockAlertBackOfficeController extends BaseAdminController
     }
 
     /**
-     * @Route("/delete", name="_delete", methods="GET")
      */
+    #[Route('/delete', name: '_delete', methods: ['GET'])]
     public function deleteEmail(RequestStack $requestStack, Session $session)
     {
         $restockingAlertId = $requestStack->getCurrentRequest()->get("id");

@@ -26,10 +26,9 @@ use Thelia\Core\HttpFoundation\Response;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\Exception\FormValidationException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * @Route("/module/stockalert", name="stockalert_front")
  * Class RestockingAlertFrontOfficeController
  * @package StockAlert\Controller
  * @author Baixas Alban <abaixas@openstudio.fr>
@@ -41,6 +40,7 @@ class StockAlertFrontOfficeController extends BaseFrontController
      * @Route("/subscribe", name="_subscribe", methods="POST")
      * @throws \JsonException
      */
+    #[Route('/module/stockalert', name: 'stockalert_front')]
     public function subscribe(Request $request, StockAlertService $stockAlertService): Response|RedirectResponse
     {
         $success = true;

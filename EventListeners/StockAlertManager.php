@@ -58,7 +58,7 @@ class StockAlertManager implements EventSubscriberInterface
      *
      * @api
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             StockAlertEvents::STOCK_ALERT_SUBSCRIBE => ['subscribe', 128],
