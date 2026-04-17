@@ -21,7 +21,7 @@ use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\ComponentToolsTrait;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
-use TwigEngine\Service\FormService;
+use Thelia\Core\Form\FormServiceInterface;
 
 #[AsLiveComponent(name: 'StockAlert', template: '@StockAlertModule/components/StockAlert.html.twig')]
 class StockAlert extends AbstractController
@@ -37,7 +37,7 @@ class StockAlert extends AbstractController
 
 
     public function __construct(
-        private readonly FormService $formService,
+        private readonly FormServiceInterface $formService,
         private StockAlertService $stockAlertService
     ) {
     }
