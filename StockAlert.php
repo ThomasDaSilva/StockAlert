@@ -17,7 +17,7 @@ use StockAlert\Model\RestockingAlertQuery;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurator;
 use Thelia\Core\Template\TemplateDefinition;
 use Thelia\Core\Translation\Translator;
-use Thelia\Install\Database;
+use Thelia\Core\Install\Database;
 use Thelia\Model\ConfigQuery;
 use Thelia\Model\LangQuery;
 use Thelia\Model\Message;

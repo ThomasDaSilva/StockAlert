@@ -31,7 +31,6 @@ use Thelia\Form\BaseForm;
 class StockAlertConfig extends BaseForm
 {
     /** @var Translator $translator */
-    protected $translator;
 
     public function checkEmails($value, ExecutionContextInterface $context)
     {
@@ -75,7 +74,7 @@ class StockAlertConfig extends BaseForm
     /**
      * @return string the name of you form. This name must be unique
      */
-    public static function getName()
+    public static function getName(): string
     {
         return 'stockalert_config_form';
     }

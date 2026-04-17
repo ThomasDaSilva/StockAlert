@@ -40,7 +40,7 @@ class RestockingAlertLoop extends BaseLoop implements PropelSearchLoopInterface
      *
      * @return LoopResult
      */
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         /** @var RestockingAlert $item */
         foreach ($loopResult->getResultDataCollection() as $item) {
@@ -67,7 +67,7 @@ class RestockingAlertLoop extends BaseLoop implements PropelSearchLoopInterface
      *
      * example :
      *
-     * public function getArgDefinitions()
+     * public function getArgDefinitions(): \Thelia\Core\Template\Loop\Argument\ArgumentCollection
      * {
      *  return new ArgumentCollection(
      *
@@ -86,7 +86,7 @@ class RestockingAlertLoop extends BaseLoop implements PropelSearchLoopInterface
      *
      * @return \Thelia\Core\Template\Loop\Argument\ArgumentCollection
      */
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): \Thelia\Core\Template\Loop\Argument\ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createIntListTypeArgument('id'),
@@ -121,7 +121,7 @@ class RestockingAlertLoop extends BaseLoop implements PropelSearchLoopInterface
      *
      * @return \Propel\Runtime\ActiveQuery\ModelCriteria
      */
-    public function buildModelCriteria()
+    public function buildModelCriteria(): \Propel\Runtime\ActiveQuery\ModelCriteria
     {
         $query = RestockingAlertQuery::create();
 
