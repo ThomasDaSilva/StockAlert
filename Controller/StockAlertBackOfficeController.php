@@ -19,27 +19,23 @@ use StockAlert\StockAlert;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Template\ParserContext;
 use Thelia\Form\Exception\FormValidationException;
 use Thelia\Model\ConfigQuery;
-use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Tools\URL;
 
 /**
  * Class StockAlertBackOfficeController
  * @package StockAlert\Controller
  * @author Baixas Alban <abaixas@openstudio.fr>
- * @author Julien ChansÃ©aume <julien@thelia.net>
+ * @author Julien Chanséaume <julien@thelia.net>
  */
 class StockAlertBackOfficeController extends BaseAdminController
 {
-
-    /**
-     * @Route("/configuration", name="_configuration", methods="POST")
-     */
-    #[Route('/admin/module/stockalert', name: 'stockalert_back')]
-    public function configuration(ParserContext $parserContext)
+    #[Route('/admin/module/stockalert/save', name: 'stockalert.config.save', methods: ['POST'])]
+    public function configuration(ParserContext $parserContext): RedirectResponse
     {
         $errorMessage = null;
 
@@ -53,38 +49,36 @@ class StockAlertBackOfficeController extends BaseAdminController
             $emails = str_replace(' ', '', $configForm['emails']);
             ConfigQuery::write(StockAlert::CONFIG_EMAILS, $emails);
             ConfigQuery::write(StockAlert::CONFIG_NOTIFY, $configForm['notify']);
-
-            return $this->generateSuccessRedirect($form);
         } catch (FormValidationException $e) {
             $errorMessage = $e->getMessage();
         } catch (\Exception $e) {
             $errorMessage = $e->getMessage();
         }
 
-        $form->setErrorMessage($errorMessage);
+        if (null !== $errorMessage) {
+            $form->setErrorMessage($errorMessage);
 
-        $parserContext
-            ->addForm($form)
-            ->setGeneralError($errorMessage);
+            $parserContext
+                ->addForm($form)
+                ->setGeneralError($errorMessage);
+        }
 
-        return $this->render(
-            "module-configure",
-            [
-                "module_code" => StockAlert::getModuleCode()
-            ]
+        return new RedirectResponse(
+            URL::getInstance()->absoluteUrl('/admin/module/' . StockAlert::getModuleCode())
         );
     }
 
-    /**
-     */
-    #[Route('/delete', name: '_delete', methods: ['GET'])]
-    public function deleteEmail(RequestStack $requestStack, Session $session)
+    #[Route('/admin/module/stockalert/delete', name: 'stockalert.delete', methods: ['GET'])]
+    public function deleteEmail(RequestStack $requestStack, Session $session): RedirectResponse
     {
-        $restockingAlertId = $requestStack->getCurrentRequest()->get("id");
+        $restockingAlertId = $requestStack->getCurrentRequest()->query->get('id');
         if ($restockingAlertId) {
             $restockingAlert = RestockingAlertQuery::create()->filterById($restockingAlertId)->findOne();
-            $restockingAlert->delete();
+            if (null !== $restockingAlert) {
+                $restockingAlert->delete();
+            }
         }
+
         return new RedirectResponse(URL::getInstance()->absoluteUrl($session->getReturnToUrl()));
     }
 }
