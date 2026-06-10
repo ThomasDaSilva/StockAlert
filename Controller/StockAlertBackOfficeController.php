@@ -18,7 +18,7 @@ use StockAlert\Model\RestockingAlertQuery;
 use StockAlert\StockAlert;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Thelia\Core\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Attribute\Route;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Template\ParserContext;
