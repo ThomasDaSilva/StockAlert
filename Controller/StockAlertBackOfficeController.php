@@ -24,6 +24,7 @@ use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Template\ParserContext;
 use Thelia\Form\Exception\FormValidationException;
 use Thelia\Model\ConfigQuery;
+use Thelia\Tools\TokenProvider;
 use Thelia\Tools\URL;
 
 /**
@@ -68,10 +69,14 @@ class StockAlertBackOfficeController extends BaseAdminController
         );
     }
 
-    #[Route('/admin/module/stockalert/delete', name: 'stockalert.delete', methods: ['GET'])]
-    public function deleteEmail(RequestStack $requestStack, Session $session): RedirectResponse
+    #[Route('/admin/module/stockalert/delete', name: 'stockalert.delete', methods: ['POST'])]
+    public function deleteEmail(RequestStack $requestStack, Session $session, TokenProvider $tokenProvider): RedirectResponse
     {
-        $restockingAlertId = $requestStack->getCurrentRequest()->query->get('id');
+        $request = $requestStack->getCurrentRequest();
+
+        $tokenProvider->checkToken((string) $request->query->get('_token'));
+
+        $restockingAlertId = $request->query->get('id');
         if ($restockingAlertId) {
             $restockingAlert = RestockingAlertQuery::create()->filterById($restockingAlertId)->findOne();
             if (null !== $restockingAlert) {

@@ -71,7 +71,9 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-end">
-                                    <a class="btn btn-danger btn-sm" href="{{ path('stockalert.delete', {'id': subscription.id}) }}"><i class="bi bi-trash"></i></a>
+                                    <form method="post" class="d-inline" action="{{ path('stockalert.delete', {'id': subscription.id}) }}&_token={{ assignToken() }}">
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                    </form>
                                 </td>
                             </tr>
                         {% endfor %}
