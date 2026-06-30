@@ -61,7 +61,7 @@ class StockAlert extends BaseModule
      * @param ConnectionInterface|null $con
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function postActivation(ConnectionInterface $con = null): void
+    public function postActivation(?ConnectionInterface $con = null): void
     {
         ConfigQuery::write(self::CONFIG_ENABLED, self::DEFAULT_ENABLED);
         ConfigQuery::write(self::CONFIG_THRESHOLD, self::DEFAULT_THRESHOLD);
@@ -109,7 +109,7 @@ class StockAlert extends BaseModule
      * @param bool $deleteModuleData
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function destroy(ConnectionInterface $con = null, $deleteModuleData = false): void
+    public function destroy(?ConnectionInterface $con = null, $deleteModuleData = false): void
     {
         if (null !== $msg = MessageQuery::create()->findOneByName('stockalert_customer')) {
             $msg->delete();
