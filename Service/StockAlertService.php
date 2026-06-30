@@ -18,9 +18,10 @@ readonly class StockAlertService
 
     public function subscribe(array $subscribeForm): string
     {
-        $locale = 'fr_FR';
-        if ($this->requestStack->getCurrentRequest() !== null) {
-            $locale = $this->requestStack->getCurrentRequest()->getSession()->getLang()->getLocale();
+        $locale = \Thelia\Model\LangQuery::create()->findOneByByDefault(true)?->getLocale() ?? 'en_US';
+        $request = $this->requestStack->getCurrentRequest();
+        if (null !== $request && $request->hasSession()) {
+            $locale = $request->getSession()->getLang()->getLocale();
         }
         $subscriberEvent = new StockAlertEvent(
             $subscribeForm['product_sale_elements_id'],

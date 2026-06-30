@@ -56,8 +56,17 @@ class StockAlertFrontOfficeController extends BaseFrontController
         }
 
         if (!$request->isXmlHttpRequest()) {
-            $request->getSession()->getFlashBag()->set('flashMessage', $message);
-            return new RedirectResponse($request->get('stockalert_subscribe_form')['success_url']);
+            if ($request->hasSession()) {
+                $request->getSession()->getFlashBag()->set('flashMessage', $message);
+            }
+            $subscribeFormData = $request->attributes->get(
+                'stockalert_subscribe_form',
+                $request->query->get(
+                    'stockalert_subscribe_form',
+                    $request->request->get('stockalert_subscribe_form')
+                )
+            );
+            return new RedirectResponse($subscribeFormData['success_url']);
         }
 
         return $this->jsonResponse(
