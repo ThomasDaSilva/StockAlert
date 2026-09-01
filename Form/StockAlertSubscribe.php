@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormFactoryBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -37,11 +38,11 @@ use Thelia\Form\BaseForm;
 class StockAlertSubscribe extends BaseForm
 {
 
-    public function init(Request $request, EventDispatcherInterface $eventDispatcher, TranslatorInterface $translator, FormFactoryBuilderInterface $formFactoryBuilder, ValidatorBuilder $validationBuilder, TokenStorageInterface $tokenStorage, string $type = "Symfony\Component\Form\Extension\Core\Type\FormType", array $data = [], array $options = []): void
+    public function init(Request $request, EventDispatcherInterface $eventDispatcher, TranslatorInterface $translator, FormFactoryBuilderInterface $formFactoryBuilder, ValidatorBuilder $validationBuilder, TokenStorageInterface $tokenStorage, string $type = "Symfony\Component\Form\Extension\Core\Type\FormType", array $data = [], array $options = [], ?CsrfTokenManagerInterface $csrfTokenManager = null): void
     {
         // To prevent "extra_fields_message" in local/modules/StockAlert/Controller/StockAlertFrontOfficeController.php:35
         $options['csrf_protection'] = false;
-        parent::init($request, $eventDispatcher, $translator, $formFactoryBuilder, $validationBuilder, $tokenStorage, $type, $data, $options);
+        parent::init($request, $eventDispatcher, $translator, $formFactoryBuilder, $validationBuilder, $tokenStorage, $type, $data, $options, $csrfTokenManager);
     }
 
     protected function buildForm()
